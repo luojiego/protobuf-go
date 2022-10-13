@@ -402,6 +402,7 @@ func genMessageField(g *protogen.GeneratedFile, f *fileInfo, m *messageInfo, fie
 	tags := structTags{
 		{"protobuf", fieldProtobufTagValue(field)},
 		{"json", fieldJSONTagValue(field)},
+		{"bson", fieldBsonTagValue(field)},
 	}
 	if field.Desc.IsMap() {
 		key := field.Message.Fields[0]
@@ -714,6 +715,13 @@ func fieldDefaultValue(g *protogen.GeneratedFile, f *fileInfo, m *messageInfo, f
 }
 
 func fieldJSONTagValue(field *protogen.Field) string {
+	return string(field.Desc.Name()) + ",omitempty"
+}
+
+func fieldBsonTagValue(field *protogen.Field) string {
+	if field.Desc.Name() == "userId" {
+		return "_id, omitempty"
+	}
 	return string(field.Desc.Name()) + ",omitempty"
 }
 
